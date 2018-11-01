@@ -21,5 +21,6 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
                 <validation:validate-size value="#[json:age]" min="2" max="3" message="Please provide correct age"/>
             </validation:validations>
         </validation:all>
+        <logger message="Validation successfull" level="INFO" doc:name="Logger"/>
     </flow>
 </mule>
