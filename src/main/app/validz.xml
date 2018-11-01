@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8081" doc:name="HTTP Listener Configuration"/>
+    <validation:config name="Validation_Configuration" doc:name="Validation Configuration"/>
+    <flow name="validzFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/vall" doc:name="HTTP"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <validation:all config-ref="Validation_Configuration"  doc:name="Validation">
+            <validation:validations>
+                <validation:is-email email="#[json:email]" />
+                <validation:is-not-empty value="#[json:account]" message="Account Number Required"/>
+                <validation:is-number value="#[json:id]" numberType="INTEGER" message="ID can not be String data Type"/>
+                <validation:matches-regex value="#[json:name]" regex="^[a-zA-Z]+$" message="Name can not contain Integer value and other special charectors"/>
+                <validation:validate-size value="#[json:age]" min="2" max="3" message="Please provide correct age"/>
+            </validation:validations>
+        </validation:all>
+        <logger level="INFO" doc:name="Logger" message="Validation Successful"/>
+    </flow>
+</mule>
